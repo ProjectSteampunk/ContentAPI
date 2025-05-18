@@ -3,6 +3,9 @@ name: Replace Placeholders
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   replace:
     runs-on: ubuntu-latest
