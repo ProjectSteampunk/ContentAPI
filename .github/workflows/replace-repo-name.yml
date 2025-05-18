@@ -24,6 +24,7 @@ jobs:
           find . \
             -type f \
             -not -path "./.git/*" \
+            -not -path "./.github/workflows/*" \
             -exec grep -Iq . {} \; \
             -exec sed -i "s/__REPO_NAME_LOWER__/${REPO_NAME_LOWER}/g" {} \; \
             -exec sed -i "s/__REPO_NAME__/${REPO_NAME}/g" {} \;
