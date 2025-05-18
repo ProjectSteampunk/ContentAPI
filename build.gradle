@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    alias libs.plugins.shadow
+    alias libs.plugins.blossom
+}
+
+group = 'me.instrumentalityi'
+version this.properties['pluginVersion']
+
+allprojects {
+    apply(plugin: 'java')
+    apply(plugin: 'maven-publish')
+    apply(plugin: "com.gradleup.shadow")
+    apply(plugin: "net.kyori.blossom")
+
+    group = "me.instrumentalityi.__REPO_NAME__"
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        // Paper
+        maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+
+        // Lamp
+        maven { url = 'https://jitpack.io' }
+
+        // Saki Releases (zaiko)
+        maven { url = 'https://repo.saki.gg/releases/' }
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    tasks {
+        compileJava {
+            options.encoding('UTF-8')
+
+            targetCompatibility(JavaVersion.VERSION_21.toString())
+            sourceCompatibility(JavaVersion.VERSION_21.toString())
+
+            // for Lamp
+            options.compilerArgs += ['-parameters']
+            options.fork = true
+        }
+
+        javadoc {
+            options.encoding('UTF-8')
+        }
+
+        processResources {
+            // set encoding to UTF-8
+            filteringCharset('UTF-8')
+        }
+    }
+}
+
+dependencies {
+    implementation(project("common"))
+    implementation(project("paper"))
+}

@@ -1,0 +1,33 @@
+[versions]
+
+slf4j = "2.0.16"
+annotations = "24.1.0"
+lombok = "1.18.36"
+mesh = "1.2.1"
+steampunklib = "unspecified"
+lamp = "4.0.0-rc.10"
+
+# plugins
+shadow = "8.3.5"
+userdev = "2.0.0-beta.14"
+blossom = "2.1.0"
+
+[libraries]
+
+slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+mesh = { group = "us.figt", name = "Mesh", version.ref = "mesh" }
+steampunklib = { group = "me.instrumentalityi.lib", name = "paper", version.ref = "steampunklib" }
+lamp = { group = "io.github.revxrsal", name = "lamp.common", version.ref = "lamp" }
+lamp-bukkit = { group = "io.github.revxrsal", name = "lamp.bukkit", version.ref = "lamp" }
+lamp-brigadier = { group = "io.github.revxrsal", name = "lamp.brigadier", version.ref = "lamp" }
+
+[bundles]
+lamp = ["lamp", "lamp-bukkit", "lamp-brigadier"]
+
+[plugins]
+
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+userdev = { id = "io.papermc.paperweight.userdev", version.ref = "userdev" }
+blossom = { id = "net.kyori.blossom", version.ref = "blossom" }

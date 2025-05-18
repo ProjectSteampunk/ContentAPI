@@ -1,0 +1,29 @@
+# .github/workflows/replace-repo-name.yml
+name: Replace Placeholders
+on:
+  workflow_dispatch:
+
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Replace __REPO_NAME__ and __REPO_NAME_LOWER__
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          REPO_NAME_LOWER=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
+
+          echo "Original Repo Name: $REPO_NAME"
+          echo "Lowercase Repo Name: $REPO_NAME_LOWER"
+
+          # Replace both placeholders
+          grep -rl '__REPO_NAME_LOWER__' . | xargs sed -i "s/__REPO_NAME_LOWER__/$REPO_NAME_LOWER/g"
+          grep -rl '__REPO_NAME__' . | xargs sed -i "s/__REPO_NAME__/$REPO_NAME/g"
+
+      - name: Commit changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -am "Replace placeholders with repo name values"
+          git push

@@ -1,0 +1,17 @@
+name: __REPO_NAME__
+main: me.instrumentalityi.__REPO_NAME_LOWER__.paper.__REPO_NAME__Plugin
+version: 0.1.0
+api-version: '1.21.4'
+bootstrapper: me.instrumentalityi.__REPO_NAME_LOWER__.paper.__REPO_NAME__Bootstrap
+loader: me.instrumentalityi.__REPO_NAME_LOWER__.paper.__REPO_NAME__Loader
+dependencies:
+  bootstrap:
+    SteampunkLib:
+      load: BEFORE
+      required: true
+      join-classpath: false
+  server:
+    SteampunkLib:
+      load: BEFORE
+      required: true
+      join-classpath: true

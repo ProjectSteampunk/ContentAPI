@@ -1,0 +1,24 @@
+dependencies {
+    compileOnly(libs.slf4j)
+
+    compileOnly(libs.annotations)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    compileOnly(libs.steampunklib)
+
+    implementation(libs.mesh)
+}
+
+publishing {
+    publications {
+        main(MavenPublication) {
+            artifactId = 'common'
+
+            from(components["shadow"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
+        }
+    }
+}
