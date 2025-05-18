@@ -1,13 +1,13 @@
-package me.instrumentalityi.__REPO_NAME_LOWER__.paper;
+package me.instrumentalityi.contentapi.paper;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 
-public class __REPO_NAME__Plugin extends JavaPlugin {
+public class ContentAPIPlugin extends JavaPlugin {
 
-    private static __REPO_NAME__Plugin INSTANCE;
+    private static ContentAPIPlugin INSTANCE;
 
     private Lamp<BukkitCommandActor> commandHandler;
 

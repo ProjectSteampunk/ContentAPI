@@ -1,4 +1,4 @@
-package me.instrumentalityi.__REPO_NAME_LOWER__.paper;
+package me.instrumentalityi.contentapi.paper;
 
 import io.papermc.paper.plugin.loader.PluginClasspathBuilder;
 import io.papermc.paper.plugin.loader.PluginLoader;
@@ -7,7 +7,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 
-public class __REPO_NAME__Loader implements PluginLoader {
+public class ContentAPILoader implements PluginLoader {
 
     @Override
     public void classloader(PluginClasspathBuilder pluginClasspathBuilder) {
