@@ -1,0 +1,7 @@
+test-item:
+  type: "item"
+  title: "&6Test Item"
+  material: "BOOK"
+  lore:
+    - "&fThat's a cool book"
+    - "&7Don't you think?"

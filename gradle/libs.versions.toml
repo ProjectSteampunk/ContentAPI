@@ -6,6 +6,7 @@ lombok = "1.18.36"
 mesh = "1.2.1"
 steampunklib = "unspecified"
 lamp = "4.0.0-rc.10"
+customBlockData = "2.2.2"
 
 # plugins
 shadow = "8.3.5"
@@ -22,6 +23,7 @@ steampunklib = { group = "me.instrumentalityi.lib", name = "paper", version.ref 
 lamp = { group = "io.github.revxrsal", name = "lamp.common", version.ref = "lamp" }
 lamp-bukkit = { group = "io.github.revxrsal", name = "lamp.bukkit", version.ref = "lamp" }
 lamp-brigadier = { group = "io.github.revxrsal", name = "lamp.brigadier", version.ref = "lamp" }
+customBlockData = { group = "com.jeff-media", name = "custom-block-data", version.ref = "customBlockData"}
 
 [bundles]
 lamp = ["lamp", "lamp-bukkit", "lamp-brigadier"]

@@ -12,6 +12,7 @@ dependencies {
 
     compileOnly(libs.steampunklib)
     implementation(libs.bundles.lamp)
+    implementation(libs.customBlockData)
 
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 }
