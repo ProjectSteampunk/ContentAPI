@@ -1,14 +1,13 @@
 package me.instrumentalityi.contentapi.paper.content.builder;
 
 import me.instrumentalityi.contentapi.common.content.builder.ContentBuilder;
-import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
 import me.instrumentalityi.contentapi.paper.content.ContentData;
 import me.instrumentalityi.contentapi.paper.content.GameItem;
 import me.instrumentalityi.contentapi.paper.content.builder.events.ItemBuildEvent;
 import me.instrumentalityi.contentapi.paper.content.builder.events.ItemUpdateEvent;
 import me.instrumentalityi.contentapi.paper.content.item.ItemAttribute;
 import me.instrumentalityi.contentapi.paper.content.item.impl.MaterialAttribute;
-import me.instrumentalityi.contentapi.paper.utils.ItemEditor;
+import me.instrumentalityi.steampunklib.paper.utils.ItemEditor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;

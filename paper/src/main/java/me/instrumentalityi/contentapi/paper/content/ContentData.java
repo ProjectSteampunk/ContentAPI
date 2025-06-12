@@ -3,7 +3,7 @@ package me.instrumentalityi.contentapi.paper.content;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.instrumentalityi.contentapi.common.content.Content;
-import me.instrumentalityi.contentapi.paper.utils.containers.ContainerEditor;
+import me.instrumentalityi.steampunklib.paper.utils.containers.ContainerEditor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;

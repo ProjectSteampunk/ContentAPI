@@ -1,7 +1,7 @@
 package me.instrumentalityi.contentapi.paper.content.item.impl;
 
 import me.instrumentalityi.contentapi.paper.content.item.ItemAttribute;
-import me.instrumentalityi.contentapi.paper.utils.ItemEditor;
+import me.instrumentalityi.steampunklib.paper.utils.ItemEditor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

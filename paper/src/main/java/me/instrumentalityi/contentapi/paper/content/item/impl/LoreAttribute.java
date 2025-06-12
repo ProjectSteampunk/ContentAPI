@@ -1,6 +1,5 @@
 package me.instrumentalityi.contentapi.paper.content.item.impl;
 
-import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
 import me.instrumentalityi.contentapi.paper.content.item.ItemAttribute;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
