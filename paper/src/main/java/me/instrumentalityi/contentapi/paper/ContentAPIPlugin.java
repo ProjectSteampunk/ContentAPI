@@ -37,7 +37,12 @@ public class ContentAPIPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+        this.registerListeners();
         this.registerCommands();
+    }
+
+    private void registerListeners() {
+        Bukkit.getPluginManager().registerEvents(new GameItem.GameItemListener(), this);
     }
 
     private void registerCommands() {

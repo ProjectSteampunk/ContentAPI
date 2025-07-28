@@ -1,6 +1,7 @@
 package me.instrumentalityi.contentapi.paper.content;
 
 import lombok.Getter;
+import me.instrumentalityi.contentapi.common.ContentModule;
 import me.instrumentalityi.contentapi.common.content.Content;
 import me.instrumentalityi.contentapi.common.content.builder.ContentBuilder;
 import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
@@ -10,7 +11,11 @@ import me.instrumentalityi.contentapi.paper.content.item.impl.LoreAttribute;
 import me.instrumentalityi.contentapi.paper.content.item.impl.MaterialAttribute;
 import me.instrumentalityi.contentapi.paper.content.item.impl.NameAttribute;
 import me.instrumentalityi.contentapi.paper.utils.BukkitConfigUtil;
+import me.instrumentalityi.steampunklib.common.modules.Modules;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,5 +78,22 @@ public class GameItem implements Content<ItemStack> {
     @Override
     public @NotNull ContentBuilder<ItemStack> builder() {
         return new ItemBuilder(this);
+    }
+
+    public void interact(@NotNull PlayerInteractEvent event) {}
+
+    public static class GameItemListener implements Listener {
+
+        @EventHandler
+        private void onInteract(@NotNull PlayerInteractEvent event) {
+            ItemStack item = event.getItem();
+
+            if(item == null) return;
+
+            GameItem gameItem = Modules.get(ContentModule.class).getContent(GameItem.class, item);
+            if(gameItem == null) return;
+
+            gameItem.interact(event);
+        }
     }
 }
