@@ -4,7 +4,6 @@ import me.instrumentalityi.contentapi.common.ContentModule;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -22,8 +21,8 @@ public class ContentCommand {
             return;
         }
 
-        ItemStack itemStack = item.builder().build();
-
-        if(itemStack != null) player.give(itemStack);
+        item.builder().build().thenAccept(itemStack -> {
+            if(itemStack != null) player.give(itemStack);
+        });
     }
 }

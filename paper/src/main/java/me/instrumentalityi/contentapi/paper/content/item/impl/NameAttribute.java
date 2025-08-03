@@ -1,10 +1,15 @@
 package me.instrumentalityi.contentapi.paper.content.item.impl;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
 import me.instrumentalityi.contentapi.paper.content.item.ItemAttribute;
 import me.instrumentalityi.steampunklib.paper.utils.ItemEditor;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
 
 public class NameAttribute implements ItemAttribute {
 
@@ -17,11 +22,15 @@ public class NameAttribute implements ItemAttribute {
     }
 
     @Override
-    public void applyToItem(@NotNull ItemStack item) {
-        item = new ItemEditor(item)
-                .meta(itemMeta -> {
-                    itemMeta.displayName(this.name);
-                }).build();
+    public void applyToItem(@NotNull ItemEditor editor) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        Bukkit.getScheduler().runTask(ContentAPIPlugin.getInstance(), () -> {
+            editor.modify(item -> item.setData(DataComponentTypes.CUSTOM_NAME, name));
+            future.complete(null);
+        });
+
+        future.join();
     }
 
     @Override
