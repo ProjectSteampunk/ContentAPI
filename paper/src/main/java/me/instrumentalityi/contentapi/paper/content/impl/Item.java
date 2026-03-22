@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 import me.instrumentalityi.contentapi.paper.content.Content;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.utils.RegistryUtil;
+import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,6 +26,8 @@ public class Item implements Content, Grantable {
     private static final ItemType DEFAULT_ITEM_TYPE = ItemType.ARROW;
     private static final String DEFAULT_TITLE = "Unspecified";
     private static final String DEFAULT_DESCRIPTION = "Enter a description for this item.";
+
+    public static final int MAX_DESCRIPTION_LENGTH = 45;
 
     @Getter
     private final @NotNull String id;
@@ -53,12 +58,13 @@ public class Item implements Content, Grantable {
     @Override
     public Result grant(Player player) {
         ItemStack item = this.craftItem();
+        Component title = this.craftTitle();
 
         if (!player.getInventory().addItem(item).isEmpty()) {
-            return new NoSpace();
+            return new NoSpace(title);
         }
 
-        return new Result.Granted();
+        return new GrantedItem(title);
     }
 
     protected @NotNull ItemStack craftItem() {
@@ -79,10 +85,22 @@ public class Item implements Content, Grantable {
         return ItemLore.lore()
                 .addLine(Component.text("Item").color(NamedTextColor.GRAY))
                 .addLine(Component.empty())
-                .addLine(Component.text(this.description).color(NamedTextColor.WHITE))
+                .addLines(PaperStringUtil.wrap(this.description, MAX_DESCRIPTION_LENGTH,
+                        line -> Component.text(line, NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)))
                 .build();
     }
 
-    public record NoSpace() implements Result {
+    public record NoSpace(Component title) implements Result {
+        @Override
+        public Component message() {
+            return MiniMessage.miniMessage().deserialize("<red>Attempted to grant '<title>' to the player, but no space was found.", Placeholder.component("title", title));
+        }
+    }
+
+    public record GrantedItem(Component title) implements Result {
+        @Override
+        public Component message() {
+            return MiniMessage.miniMessage().deserialize("<green>Granted '<title>' to the player.", Placeholder.component("title", title));
+        }
     }
 }

@@ -1,5 +1,6 @@
 package me.instrumentalityi.contentapi.paper;
 
+import me.instrumentalityi.contentapi.paper.content.ContentCommand;
 import me.instrumentalityi.contentapi.paper.content.ContentModule;
 import me.instrumentalityi.contentapi.paper.conversation.ConversationModule;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
@@ -35,7 +36,7 @@ public class ContentAPIPlugin extends JavaPlugin {
     private void registerCommands() {
         this.commandHandler = BukkitLamp.builder(this).build();
 
-//        this.commandHandler.register(new ContentCommand());
+        this.commandHandler.register(new ContentCommand());
     }
 
     public static ContentAPIPlugin getInstance() {

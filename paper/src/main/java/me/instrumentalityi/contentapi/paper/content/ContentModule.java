@@ -72,6 +72,6 @@ public class ContentModule implements Module {
             throw new RuntimeException("Content requires a repository for " + type);
         }
 
-        return repo.load(config);
+        return repo.loadContent(config);
     }
 }
