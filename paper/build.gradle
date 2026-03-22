@@ -5,10 +5,16 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common"))
+    compileOnly(libs.slf4j)
+
+    compileOnly(libs.annotations)
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
+
+    compileOnly(libs.steampunklib)
+
+    implementation(libs.mesh)
 
     compileOnly(libs.steampunklib)
     implementation(libs.bundles.lamp)
