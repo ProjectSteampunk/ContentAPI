@@ -1,0 +1,7 @@
+apple:
+  type: "consumable"
+  material: "APPLE"
+  title: "Apple"
+  description: "A source of nutrition, not much - but it will do."
+  uses: 3
+  cooldown: 1000

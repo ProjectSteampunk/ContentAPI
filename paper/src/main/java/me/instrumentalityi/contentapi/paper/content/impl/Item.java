@@ -8,7 +8,6 @@ import me.instrumentalityi.contentapi.paper.content.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;
-import me.instrumentalityi.contentapi.paper.content.interaction.InteractionHandler;
 import me.instrumentalityi.contentapi.paper.utils.RegistryUtil;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import net.kyori.adventure.text.Component;
@@ -26,22 +25,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class Item implements Content, Grantable, Interactable<PlayerInteractEvent> {
 
-    public static final String ID = "item";
+    public static final @NotNull String ID = "item";
 
+    // DEFAULTS
     private static final ItemType DEFAULT_ITEM_TYPE = ItemType.ARROW;
     private static final String DEFAULT_TITLE = "Unspecified";
     private static final String DEFAULT_DESCRIPTION = "Enter a description for this item.";
 
     public static final int MAX_DESCRIPTION_LENGTH = 45;
 
-    @Getter private final @NotNull ContentRepository<Item> repo;
+    // INITIALIZATION
+    @Getter private final @NotNull ContentRepository<? extends Item> repo;
     @Getter private final @NotNull String id;
 
-    private @NotNull ItemType material = DEFAULT_ITEM_TYPE;
-    private @NotNull String title = DEFAULT_TITLE;
-    private @NotNull String description = DEFAULT_DESCRIPTION;
+    // COMPONENTS
+    protected @NotNull ItemType material = DEFAULT_ITEM_TYPE;
+    protected @NotNull String title = DEFAULT_TITLE;
+    protected @NotNull String description = DEFAULT_DESCRIPTION;
 
-    public Item(@NotNull ContentRepository<Item> repo, @NotNull String id) {
+    public Item(@NotNull ContentRepository<? extends Item> repo, @NotNull String id) {
         this.repo = repo;
         this.id = id;
     }
@@ -64,7 +66,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
     @Override
     public Result grant(Player player) {
         ItemStack item = this.craftItem();
-        Component title = this.craftTitle();
+        Component title = this.craftTitle(item);
 
         if (!player.getInventory().addItem(item).isEmpty()) {
             return new NoSpace(title);
@@ -73,29 +75,26 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         return new GrantedItem(title);
     }
 
-    @Override
-    public void interact(@NotNull PlayerInteractEvent args) {
-        Player player = args.getPlayer();
-
-        player.sendMessage(Component.text("You interacted with a valid item"));
-    }
-
     protected @NotNull ItemStack craftItem() {
         ItemStack item = this.material.createItemStack();
-        item.setData(DataComponentTypes.CUSTOM_NAME, this.craftTitle());
-        item.setData(DataComponentTypes.LORE, this.craftLore());
+        return this.shapeItem(item);
+    }
+
+    protected ItemStack shapeItem(@NotNull ItemStack item) {
         item.editPersistentDataContainer(this::shapeData);
+        item.setData(DataComponentTypes.CUSTOM_NAME, this.craftTitle(item));
+        item.setData(DataComponentTypes.LORE, this.craftLore(item));
 
         return item;
     }
 
-    private @NotNull Component craftTitle() {
+    protected @NotNull Component craftTitle(@NotNull ItemStack item) {
         return Component.text(this.title)
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false);
     }
 
-    private @NotNull ItemLore craftLore() {
+    protected @NotNull ItemLore craftLore(@NotNull ItemStack item) {
         return ItemLore.lore()
                 .addLine(Component.text("Item").color(NamedTextColor.GRAY))
                 .addLine(Component.empty())

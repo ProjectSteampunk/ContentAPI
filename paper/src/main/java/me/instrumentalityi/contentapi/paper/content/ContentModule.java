@@ -2,6 +2,7 @@ package me.instrumentalityi.contentapi.paper.content;
 
 import lombok.Getter;
 import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
+import me.instrumentalityi.contentapi.paper.content.impl.Consumable;
 import me.instrumentalityi.contentapi.paper.content.impl.Item;
 import me.instrumentalityi.steampunklib.common.modules.Module;
 import me.instrumentalityi.steampunklib.common.modules.exceptions.ModuleStartupException;
@@ -33,6 +34,7 @@ public class ContentModule implements Module {
         this.repositories = new ConcurrentHashMap<>();
 
         this.registerProducer(Item.ID, Item.class, Item::new);
+        this.registerProducer(Consumable.ID, Consumable.class, Consumable::new);
 
         this.loader.load();
     }
