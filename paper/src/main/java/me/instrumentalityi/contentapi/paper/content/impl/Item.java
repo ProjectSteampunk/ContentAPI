@@ -3,9 +3,12 @@ package me.instrumentalityi.contentapi.paper.content.impl;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import me.instrumentalityi.contentapi.paper.content.Content;
+import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
+import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;
+import me.instrumentalityi.contentapi.paper.content.interaction.InteractionHandler;
 import me.instrumentalityi.contentapi.paper.utils.RegistryUtil;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import net.kyori.adventure.text.Component;
@@ -15,11 +18,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
-public class Item implements Content, Grantable {
+public class Item implements Content, Grantable, Interactable<PlayerInteractEvent> {
 
     public static final String ID = "item";
 
@@ -29,14 +34,15 @@ public class Item implements Content, Grantable {
 
     public static final int MAX_DESCRIPTION_LENGTH = 45;
 
-    @Getter
-    private final @NotNull String id;
+    @Getter private final @NotNull ContentRepository<Item> repo;
+    @Getter private final @NotNull String id;
 
     private @NotNull ItemType material = DEFAULT_ITEM_TYPE;
     private @NotNull String title = DEFAULT_TITLE;
     private @NotNull String description = DEFAULT_DESCRIPTION;
 
-    public Item(@NotNull String id) {
+    public Item(@NotNull ContentRepository<Item> repo, @NotNull String id) {
+        this.repo = repo;
         this.id = id;
     }
 
@@ -67,10 +73,18 @@ public class Item implements Content, Grantable {
         return new GrantedItem(title);
     }
 
+    @Override
+    public void interact(@NotNull PlayerInteractEvent args) {
+        Player player = args.getPlayer();
+
+        player.sendMessage(Component.text("You interacted with a valid item"));
+    }
+
     protected @NotNull ItemStack craftItem() {
         ItemStack item = this.material.createItemStack();
         item.setData(DataComponentTypes.CUSTOM_NAME, this.craftTitle());
         item.setData(DataComponentTypes.LORE, this.craftLore());
+        item.editPersistentDataContainer(this::shapeData);
 
         return item;
     }
@@ -88,6 +102,12 @@ public class Item implements Content, Grantable {
                 .addLines(PaperStringUtil.wrap(this.description, MAX_DESCRIPTION_LENGTH,
                         line -> Component.text(line, NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)))
                 .build();
+    }
+
+    private void shapeData(PersistentDataContainer pdc) {
+        ContainerData data = new ContainerData(this.repo, this);
+
+        data.write(pdc);
     }
 
     public record NoSpace(Component title) implements Result {

@@ -20,7 +20,7 @@ public class ContentCommand {
 
     @Subcommand("grant")
     private void grant(Player player, String type, String id) {
-        ContentRepository<?> repo = Modules.get(ContentModule.class).getRespository(type);
+        ContentRepository<?> repo = Modules.get(ContentModule.class).getRepository(type);
         if(repo == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Unable to find '<type>' repository", Placeholder.unparsed("type", type)));
             return;

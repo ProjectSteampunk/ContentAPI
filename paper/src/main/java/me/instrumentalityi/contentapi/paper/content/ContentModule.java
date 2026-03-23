@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class ContentModule implements Module {
 
@@ -46,18 +46,22 @@ public class ContentModule implements Module {
         this.repositories = null;
     }
 
-    public <T extends Content> void registerProducer(@NotNull String id, Class<T> clazz, @NotNull Function<String, T> provider) {
+    public <T extends Content> void registerProducer(@NotNull String id, Class<T> clazz, @NotNull BiFunction<ContentRepository<T>, String, T> provider) {
         this.conversions.put(id, clazz.getSimpleName());
-        this.repositories.put(id, new ContentRepository<>(id, provider));
+
+        ContentRepository<T> repository = new ContentRepository<>(id);
+        repository.setProvider(provider);
+
+        this.repositories.put(id, repository);
     }
 
-    public @Nullable ContentRepository<?> getRespository(@NotNull String id) {
+    public @Nullable ContentRepository<?> getRepository(@NotNull String id) {
         return this.repositories.get(id);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Content> @Nullable ContentRepository<T> getRepository(@NotNull String id, @NotNull Class<T> clazz) {
-        return (ContentRepository<T>) this.getRespository(id);
+        return (ContentRepository<T>) this.getRepository(id);
     }
 
     public @NotNull Content loadContent(@NotNull ConfigurationSection config) {
@@ -67,7 +71,7 @@ public class ContentModule implements Module {
             throw new RuntimeException("Content requires a type");
         }
 
-        ContentRepository<?> repo = this.getRespository(type);
+        ContentRepository<?> repo = this.getRepository(type);
         if(repo == null) {
             throw new RuntimeException("Content requires a repository for " + type);
         }

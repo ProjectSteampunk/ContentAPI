@@ -2,8 +2,10 @@ package me.instrumentalityi.contentapi.paper;
 
 import me.instrumentalityi.contentapi.paper.content.ContentCommand;
 import me.instrumentalityi.contentapi.paper.content.ContentModule;
+import me.instrumentalityi.contentapi.paper.content.impl.ItemInteractionHandler;
 import me.instrumentalityi.contentapi.paper.conversation.ConversationModule;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
@@ -30,7 +32,7 @@ public class ContentAPIPlugin extends JavaPlugin {
     }
 
     private void registerListeners() {
-
+        Bukkit.getPluginManager().registerEvents(new ItemInteractionHandler(), this);
     }
 
     private void registerCommands() {
