@@ -5,6 +5,7 @@ annotations = "24.1.0"
 lombok = "1.18.36"
 mesh = "1.2.1"
 steampunklib = "unspecified"
+menuapi = "unspecified"
 lamp = "4.0.0-rc.10"
 customBlockData = "2.2.2"
 
@@ -20,6 +21,7 @@ annotations = { group = "org.jetbrains", name = "annotations", version.ref = "an
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 mesh = { group = "us.figt", name = "Mesh", version.ref = "mesh" }
 steampunklib = { group = "me.instrumentalityi.lib", name = "paper", version.ref = "steampunklib" }
+menuapi = { group = "me.instrumentalityi.menuapi", name = "paper", version.ref = "menuapi"}
 lamp = { group = "io.github.revxrsal", name = "lamp.common", version.ref = "lamp" }
 lamp-bukkit = { group = "io.github.revxrsal", name = "lamp.bukkit", version.ref = "lamp" }
 lamp-brigadier = { group = "io.github.revxrsal", name = "lamp.brigadier", version.ref = "lamp" }

@@ -8,6 +8,9 @@ import me.instrumentalityi.contentapi.paper.content.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;
+import me.instrumentalityi.contentapi.paper.content.menus.views.ItemView;
+import me.instrumentalityi.contentapi.paper.content.menus.views.MenuView;
+import me.instrumentalityi.contentapi.paper.content.menus.views.MenuViewable;
 import me.instrumentalityi.contentapi.paper.utils.RegistryUtil;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import net.kyori.adventure.text.Component;
@@ -23,7 +26,7 @@ import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
-public class Item implements Content, Grantable, Interactable<PlayerInteractEvent> {
+public class Item implements Content, Grantable, Interactable<PlayerInteractEvent>, MenuViewable {
 
     public static final @NotNull String ID = "item";
 
@@ -75,7 +78,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         return new GrantedItem(title);
     }
 
-    protected @NotNull ItemStack craftItem() {
+    public @NotNull ItemStack craftItem() {
         ItemStack item = this.material.createItemStack();
         return this.shapeItem(item);
     }
@@ -107,6 +110,11 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         ContainerData data = new ContainerData(this.repo, this);
 
         data.write(pdc);
+    }
+
+    @Override
+    public @NotNull MenuView getView() {
+        return new ItemView(this);
     }
 
     public record NoSpace(Component title) implements Result {

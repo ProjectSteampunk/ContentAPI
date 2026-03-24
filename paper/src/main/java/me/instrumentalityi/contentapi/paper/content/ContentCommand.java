@@ -1,6 +1,7 @@
 package me.instrumentalityi.contentapi.paper.content;
 
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
+import me.instrumentalityi.contentapi.paper.content.menus.ContentBrowseMenu;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -15,7 +16,7 @@ public class ContentCommand {
     @CommandPlaceholder
     private void main(Player player) {
         // Open a content inventory
-
+        new ContentBrowseMenu().open(player);
     }
 
     @Subcommand("grant")

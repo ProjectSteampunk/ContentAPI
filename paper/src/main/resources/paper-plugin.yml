@@ -10,8 +10,16 @@ dependencies:
       load: BEFORE
       required: true
       join-classpath: false
+    MenuAPI:
+      load: BEFORE
+      required: true
+      join-classpath: false
   server:
     SteampunkLib:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    MenuAPI:
       load: BEFORE
       required: true
       join-classpath: true
