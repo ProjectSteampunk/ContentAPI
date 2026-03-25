@@ -8,6 +8,9 @@ import me.instrumentalityi.contentapi.paper.content.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;
+import me.instrumentalityi.contentapi.paper.content.menus.values.ConversationValue;
+import me.instrumentalityi.contentapi.paper.content.menus.values.EditableValues;
+import me.instrumentalityi.contentapi.paper.content.menus.values.MenuEditable;
 import me.instrumentalityi.contentapi.paper.content.menus.views.ItemView;
 import me.instrumentalityi.contentapi.paper.content.menus.views.MenuView;
 import me.instrumentalityi.contentapi.paper.content.menus.views.MenuViewable;
@@ -26,7 +29,7 @@ import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
-public class Item implements Content, Grantable, Interactable<PlayerInteractEvent>, MenuViewable {
+public class Item implements Content, Grantable, Interactable<PlayerInteractEvent>, MenuViewable, MenuEditable {
 
     public static final @NotNull String ID = "item";
 
@@ -40,6 +43,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
     // INITIALIZATION
     @Getter private final @NotNull ContentRepository<? extends Item> repo;
     @Getter private final @NotNull String id;
+    @Getter protected final @NotNull EditableValues values;
 
     // COMPONENTS
     protected @NotNull ItemType material = DEFAULT_ITEM_TYPE;
@@ -49,6 +53,11 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
     public Item(@NotNull ContentRepository<? extends Item> repo, @NotNull String id) {
         this.repo = repo;
         this.id = id;
+        this.values = new EditableValues(
+                new ConversationValue.Text("Item Title", () -> this.title, s -> this.title = s),
+                new ConversationValue.Item("Item Type", () -> this.material, s -> this.material = s),
+                new ConversationValue.Text("Item Description", () -> this.description, s -> this.description = s)
+        );
     }
 
     @Override
@@ -115,6 +124,11 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
     @Override
     public @NotNull MenuView getView() {
         return new ItemView(this);
+    }
+
+    @Override
+    public @NotNull ItemStack getPreview() {
+        return this.craftItem();
     }
 
     public record NoSpace(Component title) implements Result {

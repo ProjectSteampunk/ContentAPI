@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.menus.values.ConversationValue;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import me.instrumentalityi.steampunklib.paper.utils.containers.ContainerEditor;
 import me.instrumentalityi.steampunklib.paper.utils.containers.impl.ItemContainer;
@@ -37,6 +38,9 @@ public class Consumable extends Item {
 
     public Consumable(@NotNull ContentRepository<Consumable> repo, @NotNull String id) {
         super(repo, id);
+        this.values.add(
+                new ConversationValue.Number("Item Uses", () -> this.uses, s -> this.uses = s)
+        );
     }
 
     @Override

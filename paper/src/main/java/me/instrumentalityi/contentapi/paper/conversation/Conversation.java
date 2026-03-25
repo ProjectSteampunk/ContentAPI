@@ -3,6 +3,7 @@ package me.instrumentalityi.contentapi.paper.conversation;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import lombok.Setter;
+import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
 import me.instrumentalityi.contentapi.paper.conversation.arguments.Argument;
 import me.instrumentalityi.contentapi.paper.conversation.arguments.ArgumentException;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
@@ -65,12 +66,18 @@ public class Conversation {
             try {
                 entry.getValue().process(event);
 
-                if(!this.isFinishedNext()) return new Result.Next(this);
+                if(this.hasNext()) {
+                    ContentAPIPlugin.getInstance().getLogger().info("Not finished");
+                    return new Result.Next(this);
+                }
 
+                ContentAPIPlugin.getInstance().getLogger().info("Finished");
+
+                this.index++;
                 return new Result.Completed(this.player);
             } catch (ArgumentException e) {
                 this.player.sendMessage(Component.text(e.getMessage()).color(NamedTextColor.RED));
-                return new Result.Invalid();
+                return new Result.Invalid(this);
             }
         }
 
@@ -88,7 +95,7 @@ public class Conversation {
             this.player.sendMessage(entry.getValue().getPrompt());
         }
 
-        private boolean isFinishedNext() {
+        private boolean hasNext() {
             return this.index + 1 >= this.conversation.arguments.size();
         }
 
@@ -121,7 +128,12 @@ public class Conversation {
                 }
             }
 
-            record Invalid() implements Result {}
+            record Invalid(Cursor cursor) implements Result {
+                @Override
+                public void proceed() {
+                    cursor.processPrompt();
+                }
+            }
         }
     }
 }
