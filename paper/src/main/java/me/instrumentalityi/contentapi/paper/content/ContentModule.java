@@ -21,9 +21,8 @@ public class ContentModule implements Module {
     private Map<String, ContentRepository<? extends Content>> repositories;
     private Map<String, String> conversions;
 
-    @Getter
-    private final ContentAPIPlugin plugin;
-    private final ContentLoader loader;
+    @Getter private final ContentAPIPlugin plugin;
+    @Getter private final ContentLoader loader;
 
     public ContentModule(@NotNull ContentAPIPlugin plugin) {
         this.plugin = plugin;

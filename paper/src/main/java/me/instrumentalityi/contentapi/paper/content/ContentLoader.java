@@ -1,7 +1,8 @@
 package me.instrumentalityi.contentapi.paper.content;
 
-import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
-import me.instrumentalityi.contentapi.paper.utils.ConfigUtil;
+import me.instrumentalityi.contentapi.paper.utils.FileUtil;
+import me.instrumentalityi.steampunklib.paper.utils.Configuration;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -9,28 +10,87 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ContentLoader {
 
+    private static final long AUTO_SAVE = 5*60*20;
+
     private final @NotNull ContentModule module;
+
+    private Map<File, byte[]> lastUpdate;
+    private List<Configuration> files;
 
     public ContentLoader(@NotNull ContentModule module) {
         this.module = module;
+
+        JavaPlugin plugin = module.getPlugin();
+        Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this::save, AUTO_SAVE, AUTO_SAVE);
     }
 
     public void load() {
+        this.load(this.retrieveContentFolder(module.getPlugin()));
+    }
+
+    public void load(@NotNull File folder) {
         JavaPlugin plugin = module.getPlugin();
-        File folder = this.retrieveContentFolder(plugin);
 
-        List<ConfigurationSection> sections = ConfigUtil.getAllKeys(plugin, folder);
+        FileReturn fileReturn = this.getFileReturn(plugin, folder);
 
-        for(ConfigurationSection section : sections) {
+        this.files = fileReturn.files();
+        for(ConfigurationSection section : fileReturn.keys()) {
             Content content = module.loadContent(section);
 
             plugin.getLogger().info("Registered content " + content.getId());
         }
+
+        this.lastUpdate = FileUtil.getYamlFileHashes(folder);
+    }
+
+    public void reload() {
+        if(!this.hasContentChanged()) {
+            module.getPlugin().getLogger().info("No change in contents found");
+            return;
+        }
+
+        module.getPlugin().getLogger().info("Reloading contents");
+        this.load();
+    }
+
+    public void save() {
+        for(Configuration file : this.files) {
+            for(String key : file.getKeys(false)) {
+                ConfigurationSection config = file.getConfigurationSection(key);
+                if(config == null) continue;
+
+                String type = config.getString("type");
+                if(type == null) continue;
+
+                ContentRepository<?> repo = this.module.getRepository(type);
+                if(repo == null) continue;
+
+                Content content = repo.getContent(config.getName());
+                if(content == null) continue;
+
+                content.write(config);
+            }
+
+            file.save();
+        }
+
+        File folder = this.retrieveContentFolder(module.getPlugin());
+        this.lastUpdate = FileUtil.getYamlFileHashes(folder);
+
+        this.module.getPlugin().getLogger().info("Saved contents");
+    }
+
+    public boolean hasContentChanged() {
+        File folder = this.retrieveContentFolder(module.getPlugin());
+        return FileUtil.hasFilesChanged(this.lastUpdate, FileUtil.getYamlFileHashes(folder));
     }
 
     private @NotNull File retrieveContentFolder(@NotNull JavaPlugin plugin) {
@@ -91,5 +151,20 @@ public class ContentLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private FileReturn getFileReturn(@NotNull JavaPlugin plugin, @NotNull File folder) {
+        List<Configuration> files = FileUtil.getConfigurationsRecursively(plugin, folder);
+        List<ConfigurationSection> keys = files.stream()
+                .flatMap(configuration -> {
+                    Set<String> vals = configuration.getKeys(false);
+
+                    return vals.stream().map(configuration::getConfigurationSection);
+                }).filter(Objects::nonNull).toList();
+
+        return new FileReturn(files, keys);
+    }
+
+    public record FileReturn(@NotNull List<Configuration> files, @NotNull List<ConfigurationSection> keys) {
     }
 }

@@ -5,6 +5,7 @@ import me.instrumentalityi.contentapi.paper.content.menus.ContentBrowseMenu;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
@@ -39,5 +40,10 @@ public class ContentCommand {
         }
 
         player.sendMessage(grantable.grant(player).message());
+    }
+
+    @Subcommand("reload")
+    private void reload(CommandSender sender) {
+        Modules.get(ContentModule.class).getLoader().reload();
     }
 }

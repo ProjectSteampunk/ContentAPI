@@ -26,6 +26,11 @@ public class ContentAPIPlugin extends JavaPlugin {
         this.registerCommands();
     }
 
+    @Override
+    public void onDisable() {
+        Modules.get(ContentModule.class).getLoader().save();
+    }
+
     private void registerModules() {
         Modules.register(new ConversationModule(this));
         Modules.register(new ContentModule(this));
