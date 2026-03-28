@@ -4,10 +4,14 @@ import com.google.common.primitives.Ints;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import me.instrumentalityi.contentapi.paper.content.Content;
 import me.instrumentalityi.contentapi.paper.content.ContentModule;
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.menus.views.MenuView;
 import me.instrumentalityi.contentapi.paper.content.menus.views.MenuViewable;
+import me.instrumentalityi.contentapi.paper.conversation.Conversation;
+import me.instrumentalityi.contentapi.paper.conversation.ConversationModule;
+import me.instrumentalityi.contentapi.paper.conversation.arguments.impl.StringArgument;
 import me.instrumentalityi.menuapi.common.props.Interactable;
+import me.instrumentalityi.menuapi.common.props.Placeable;
 import me.instrumentalityi.menuapi.paper.menus.PaperMenu;
 import me.instrumentalityi.menuapi.paper.menus.props.impl.PaperButton;
 import me.instrumentalityi.menuapi.paper.utils.PaginationHelper;
@@ -20,7 +24,6 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,6 +35,7 @@ public class ContentBrowseMenu extends PaperMenu {
     private static final int PREV_SLOT = 37;
 
     private static final int BACK_SLOT = 0;
+    private static final int CREATE_SLOT = 40;
 
     private static final int[] SLOTS = Ints.concat(
             new int[]{9, 10, 11, 12, 13, 14, 15, 16, 17},
@@ -44,14 +48,18 @@ public class ContentBrowseMenu extends PaperMenu {
             new int[]{36, 38, 39, 40, 41, 42, 44}
     );
 
-    private final @NotNull PaginationHelper<MenuView> pagination;
+    private final @NotNull Class<? extends Content> clazz;
+    private final @Nullable ContentRepository<?> repo;
+
+    private @NotNull PaginationHelper<MenuView> pagination;
     private final @Nullable PaperMenu previousMenu;
 
     public ContentBrowseMenu(@NotNull Class<? extends Content> content, @Nullable PaperMenu previousMenu) {
         super(ROWS, Component.text("Content Menu", NamedTextColor.DARK_PURPLE));
+        this.clazz = content;
+        this.repo = this.resolveRepository(content);
         this.previousMenu = previousMenu;
-        this.pagination = new PaginationHelper<MenuView>(this, (player, view) -> view.getPlaceable(this, player))
-                .paging(this.craftViews(content), SLOTS.length);
+        this.pagination = this.craftPagination();
     }
 
     public ContentBrowseMenu(@NotNull Class<? extends Content> content) {
@@ -81,6 +89,42 @@ public class ContentBrowseMenu extends PaperMenu {
 
                     return new Interactable.ClickResult.Cancelled();
                 }).build());
+
+        if(this.repo == null) return;
+
+        this.place(CREATE_SLOT, PaperButton.builder(player).useItem(this::getCreate)
+                .useAction((m, e) -> {
+                    if(!(m instanceof PaperMenu menu)) return new Interactable.ClickResult.Cancelled();
+
+                    Conversation convo = new Conversation()
+                            .addArgument("value", new StringArgument(Component.text("Please enter an ID for the content", NamedTextColor.GOLD)))
+                            .setFinisher(c -> {
+                                StringArgument arg = c.getArgument("value", StringArgument.class);
+                                String val = arg.getValue();
+
+                                if(val == null) return;
+
+                                Content content = this.repo.createAndRegisterContent(val);
+                                if(!(content instanceof MenuViewable viewable)) return;
+
+                                viewable.getView().run(menu, player);
+                            });
+
+                    Modules.get(ConversationModule.class).startConversation(player, convo);
+
+                    return new Interactable.ClickResult.Cancelled();
+                }).build());
+    }
+
+    @Override
+    public void open(@NotNull Player player) {
+        this.pagination = this.craftPagination();
+        super.open(player);
+    }
+
+    private @NotNull PaginationHelper<MenuView> craftPagination() {
+        return new PaginationHelper<>(this, this::craftView)
+                .paging(this.craftViews(this.clazz), SLOTS.length);
     }
 
     private @NotNull List<MenuView> craftViews(@NotNull Class<? extends Content> content) {
@@ -95,6 +139,10 @@ public class ContentBrowseMenu extends PaperMenu {
         return views;
     }
 
+    private ContentRepository<?> resolveRepository(@NotNull Class<? extends Content> content) {
+        return Modules.get(ContentModule.class).getRepository(content);
+    }
+
     private List<MenuView> craftRepoViews(List<ContentRepository<?>> repos) {
         return repos.stream().map(ContentRepository::getView).toList();
     }
@@ -105,6 +153,16 @@ public class ContentBrowseMenu extends PaperMenu {
 
             return viewable.getView();
         }).filter(Objects::nonNull).toList();
+    }
+
+    private Placeable craftView(@NotNull Player player, @NotNull MenuView view) {
+        return PaperButton.builder(player).useItem(view::getItem)
+                .useAction((m,e) -> {
+                    if(!(m instanceof PaperMenu menu)) return new Interactable.ClickResult.Cancelled();
+
+                    view.run(menu, player, e);
+                    return new Interactable.ClickResult.Cancelled();
+                }).build();
     }
 
     private @NotNull ItemStack getNextArrow() {
@@ -137,5 +195,13 @@ public class ContentBrowseMenu extends PaperMenu {
         placeholder.setData(DataComponentTypes.CUSTOM_NAME, Component.empty());
 
         return placeholder;
+    }
+
+    private @NotNull ItemStack getCreate() {
+        ItemStack create = ItemType.NETHER_STAR.createItemStack();
+
+        create.setData(DataComponentTypes.CUSTOM_NAME, Component.text("Create", NamedTextColor.GREEN));
+
+        return create;
     }
 }

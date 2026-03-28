@@ -1,14 +1,11 @@
 package me.instrumentalityi.contentapi.paper.content.impl;
 
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
-import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;
 import me.instrumentalityi.contentapi.paper.content.interaction.InteractionHandler;
 import me.instrumentalityi.steampunklib.paper.utils.containers.impl.ItemContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

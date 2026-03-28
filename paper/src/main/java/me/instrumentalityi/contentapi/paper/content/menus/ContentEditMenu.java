@@ -2,18 +2,12 @@ package me.instrumentalityi.contentapi.paper.content.menus;
 
 import com.google.common.primitives.Ints;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import me.instrumentalityi.contentapi.paper.content.Content;
-import me.instrumentalityi.contentapi.paper.content.ContentModule;
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.menus.values.MenuEditable;
-import me.instrumentalityi.contentapi.paper.content.menus.views.MenuView;
-import me.instrumentalityi.contentapi.paper.content.menus.views.MenuViewable;
 import me.instrumentalityi.menuapi.common.props.Interactable;
 import me.instrumentalityi.menuapi.common.props.Placeable;
 import me.instrumentalityi.menuapi.paper.menus.PaperMenu;
 import me.instrumentalityi.menuapi.paper.menus.props.impl.PaperButton;
 import me.instrumentalityi.menuapi.paper.utils.PaginationHelper;
-import me.instrumentalityi.steampunklib.common.modules.Modules;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -21,10 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ContentEditMenu extends PaperMenu {
 
@@ -50,7 +40,7 @@ public class ContentEditMenu extends PaperMenu {
     private final @Nullable PaperMenu previousMenu;
 
     public ContentEditMenu(@NotNull MenuEditable editable, @Nullable PaperMenu previousMenu) {
-        super(ROWS, Component.text("Content Menu", NamedTextColor.DARK_PURPLE));
+        super(ROWS, Component.text(editable.getId(), NamedTextColor.DARK_PURPLE));
         this.editable = editable;
         this.previousMenu = previousMenu;
         this.pagination = new PaginationHelper<>(this, this::craftEditableValue)
@@ -82,6 +72,13 @@ public class ContentEditMenu extends PaperMenu {
                 }).build());
 
         this.place(PREVIEW_SLOT, this.craftPreview(player, this.editable));
+    }
+
+    @Override
+    public boolean close() {
+        this.editable.getRepo().getLogic().saveContent(this.editable);
+
+        return true;
     }
 
     private Placeable craftEditableValue(@NotNull Player player, @NotNull ContentValue<?> value) {

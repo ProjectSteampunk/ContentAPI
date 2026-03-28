@@ -2,7 +2,10 @@ package me.instrumentalityi.contentapi.paper.content;
 
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.content.menus.ContentBrowseMenu;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
@@ -44,6 +47,8 @@ public class ContentCommand {
 
     @Subcommand("reload")
     private void reload(CommandSender sender) {
-        Modules.get(ContentModule.class).getLoader().reload();
+        int amount = Modules.get(ContentModule.class).reload();
+
+        sender.sendMessage(Component.text("Reloaded " + amount + " types", NamedTextColor.GREEN));
     }
 }

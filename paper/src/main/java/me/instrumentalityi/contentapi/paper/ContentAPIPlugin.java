@@ -28,7 +28,8 @@ public class ContentAPIPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Modules.get(ContentModule.class).getLoader().save();
+        //TODO remove this when saving happens for each item edit
+        Modules.get(ContentModule.class).save();
     }
 
     private void registerModules() {

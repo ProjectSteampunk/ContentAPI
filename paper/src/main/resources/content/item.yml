@@ -1,0 +1,15 @@
+police-id:
+  type: "item"
+  material: "PAPER"
+  title: "Police ID"
+  description: "This item represents your policing career. You can use this like an access card."
+ems-id:
+  type: "item"
+  material: "PAPER"
+  title: "Emergency ID"
+  description: "This item represents your EMS career. You can use this like an access card."
+government-id:
+  type: "item"
+  material: "PAPER"
+  title: "Government ID"
+  description: "This item represents your personal information. You can use this to identify yourself."

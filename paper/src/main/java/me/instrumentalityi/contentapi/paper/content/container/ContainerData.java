@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.instrumentalityi.contentapi.paper.content.Content;
 import me.instrumentalityi.contentapi.paper.content.ContentModule;
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
 import me.instrumentalityi.steampunklib.paper.utils.containers.ContainerEditor;
 import org.bukkit.NamespacedKey;

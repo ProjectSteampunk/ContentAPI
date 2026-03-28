@@ -1,5 +1,6 @@
 package me.instrumentalityi.contentapi.paper.content;
 
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 

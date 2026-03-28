@@ -4,7 +4,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import lombok.Getter;
 import me.instrumentalityi.contentapi.paper.content.Content;
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.container.ContainerData;
 import me.instrumentalityi.contentapi.paper.content.grant.Grantable;
 import me.instrumentalityi.contentapi.paper.content.interaction.Interactable;

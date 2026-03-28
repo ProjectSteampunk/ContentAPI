@@ -4,9 +4,11 @@ import lombok.Getter;
 import me.instrumentalityi.contentapi.paper.ContentAPIPlugin;
 import me.instrumentalityi.contentapi.paper.content.impl.Consumable;
 import me.instrumentalityi.contentapi.paper.content.impl.Item;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.contentapi.paper.utils.ClassUtil;
 import me.instrumentalityi.steampunklib.common.modules.Module;
 import me.instrumentalityi.steampunklib.common.modules.exceptions.ModuleStartupException;
+import me.instrumentalityi.steampunklib.paper.utils.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,8 +38,6 @@ public class ContentModule implements Module {
 
         this.registerProducer(Item.ID, Item.class, Item::new);
         this.registerProducer(Consumable.ID, Consumable.class, Consumable::new);
-
-        this.loader.load();
     }
 
     @Override
@@ -50,8 +50,12 @@ public class ContentModule implements Module {
     }
 
     public <T extends Content> void registerProducer(@NotNull String id, Class<T> clazz, @NotNull BiFunction<ContentRepository<T>, String, T> provider) {
+        Configuration configuration = this.loader.retrieveConfiguration(id);
+
         ContentRepository<T> repository = new ContentRepository<>(clazz, id);
         repository.setProvider(provider);
+
+        repository.getLogic().loadConfig(configuration);
 
         this.repositories.put(id, repository);
         this.conversions.put(clazz.getSimpleName(), id);
@@ -93,4 +97,17 @@ public class ContentModule implements Module {
 
         return repo.loadContent(config);
     }
+
+    public int reload() {
+        return (int) this.repositories.values().stream().map(repo -> repo.getLogic().reloadContent())
+                .filter(bool -> bool)
+                .count();
+    }
+
+    public void save() {
+        for(ContentRepository<?> repo : this.repositories.values()) {
+            repo.getLogic().saveContent();
+        }
+    }
 }
+

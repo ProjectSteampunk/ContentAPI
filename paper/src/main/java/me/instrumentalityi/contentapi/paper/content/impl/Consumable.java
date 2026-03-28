@@ -2,9 +2,8 @@ package me.instrumentalityi.contentapi.paper.content.impl;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.instrumentalityi.contentapi.paper.content.ContentRepository;
+import me.instrumentalityi.contentapi.paper.content.repository.ContentRepository;
 import me.instrumentalityi.contentapi.paper.content.menus.values.ConversationValue;
 import me.instrumentalityi.steampunklib.paper.utils.PaperStringUtil;
 import me.instrumentalityi.steampunklib.paper.utils.containers.ContainerEditor;
