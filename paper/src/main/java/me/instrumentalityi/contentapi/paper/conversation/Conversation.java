@@ -61,7 +61,7 @@ public class Conversation {
         public Result processCurrent(AsyncChatEvent event) {
             Map.Entry<String, Argument<?>> entry = this.getEntryAt(this.conversation.arguments, this.index);
 
-            if (entry == null) return new Result.Completed(this.player);
+            if (entry == null) return new Result.Completed(this, this.player);
 
             try {
                 entry.getValue().process(event);
@@ -73,8 +73,7 @@ public class Conversation {
 
                 ContentAPIPlugin.getInstance().getLogger().info("Finished");
 
-                this.index++;
-                return new Result.Completed(this.player);
+                return new Result.Completed(this, this.player);
             } catch (ArgumentException e) {
                 this.player.sendMessage(Component.text(e.getMessage()).color(NamedTextColor.RED));
                 return new Result.Invalid(this);
@@ -96,7 +95,7 @@ public class Conversation {
         }
 
         private boolean hasNext() {
-            return this.index + 1 >= this.conversation.arguments.size();
+            return this.index + 1 < this.conversation.arguments.size();
         }
 
         public boolean isFinished() {
@@ -114,9 +113,10 @@ public class Conversation {
         public interface Result {
             default void proceed() {};
 
-            record Completed(Player player) implements Result {
+            record Completed(Cursor cursor, Player player) implements Result {
                 @Override
                 public void proceed() {
+                    cursor.index = cursor.index + 1;
                     Modules.get(ConversationModule.class).finishConversation(player);
                 }
             }
