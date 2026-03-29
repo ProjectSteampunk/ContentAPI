@@ -42,10 +42,10 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
 
     // INITIALIZATION
     @Getter private final @NotNull ContentRepository<? extends Item> repo;
-    @Getter private final @NotNull String id;
     @Getter protected final @NotNull EditableValues values;
 
     // COMPONENTS
+    @Getter protected @NotNull String id;
     protected @NotNull ItemType material = DEFAULT_ITEM_TYPE;
     protected @NotNull String title = DEFAULT_TITLE;
     protected @NotNull String description = DEFAULT_DESCRIPTION;
@@ -54,6 +54,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         this.repo = repo;
         this.id = id;
         this.values = new EditableValues(
+                new ConversationValue.Text("Content ID", () -> this.id, s -> this.id = s),
                 new ConversationValue.Text("Item Title", () -> this.title, s -> this.title = s),
                 new ConversationValue.Item("Item Type", () -> this.material, s -> this.material = s),
                 new ConversationValue.Text("Item Description", () -> this.description, s -> this.description = s)
