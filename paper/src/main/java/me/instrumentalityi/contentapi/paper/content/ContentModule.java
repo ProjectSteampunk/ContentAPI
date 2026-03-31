@@ -49,7 +49,7 @@ public class ContentModule implements Module {
         this.conversions = null;
     }
 
-    public <T extends Content> void registerProducer(@NotNull String id, Class<T> clazz, @NotNull BiFunction<ContentRepository<T>, String, T> provider) {
+    public <T extends Content> ContentRepository<T> registerProducer(@NotNull String id, Class<T> clazz, @NotNull BiFunction<ContentRepository<T>, String, T> provider) {
         Configuration configuration = this.loader.retrieveConfiguration(id);
 
         ContentRepository<T> repository = new ContentRepository<>(clazz, id);
@@ -59,6 +59,8 @@ public class ContentModule implements Module {
 
         this.repositories.put(id, repository);
         this.conversions.put(clazz.getSimpleName(), id);
+
+        return repository;
     }
 
     public @Nullable ContentRepository<?> getRepository(@NotNull String id) {
