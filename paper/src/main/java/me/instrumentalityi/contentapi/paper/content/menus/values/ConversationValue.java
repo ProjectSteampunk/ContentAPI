@@ -1,15 +1,15 @@
 package me.instrumentalityi.contentapi.paper.content.menus.values;
 
 import me.instrumentalityi.contentapi.paper.content.menus.ContentValue;
-import me.instrumentalityi.contentapi.paper.conversation.Conversation;
-import me.instrumentalityi.contentapi.paper.conversation.ConversationModule;
-import me.instrumentalityi.contentapi.paper.conversation.arguments.Argument;
-import me.instrumentalityi.contentapi.paper.conversation.arguments.impl.IntArgument;
-import me.instrumentalityi.contentapi.paper.conversation.arguments.impl.ItemTypeArgument;
-import me.instrumentalityi.contentapi.paper.conversation.arguments.impl.StringArgument;
 import me.instrumentalityi.menuapi.common.Menu;
 import me.instrumentalityi.menuapi.common.props.Interactable;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
+import me.instrumentalityi.steampunklib.paper.conversation.Conversation;
+import me.instrumentalityi.steampunklib.paper.conversation.ConversationModule;
+import me.instrumentalityi.steampunklib.paper.conversation.arguments.Argument;
+import me.instrumentalityi.steampunklib.paper.conversation.arguments.impl.IntArgument;
+import me.instrumentalityi.steampunklib.paper.conversation.arguments.impl.ItemTypeArgument;
+import me.instrumentalityi.steampunklib.paper.conversation.arguments.impl.StringArgument;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

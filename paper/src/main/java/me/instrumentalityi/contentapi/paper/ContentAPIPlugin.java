@@ -3,7 +3,6 @@ package me.instrumentalityi.contentapi.paper;
 import me.instrumentalityi.contentapi.paper.content.ContentCommand;
 import me.instrumentalityi.contentapi.paper.content.ContentModule;
 import me.instrumentalityi.contentapi.paper.content.impl.ItemInteractionHandler;
-import me.instrumentalityi.contentapi.paper.conversation.ConversationModule;
 import me.instrumentalityi.steampunklib.common.modules.Modules;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +32,6 @@ public class ContentAPIPlugin extends JavaPlugin {
     }
 
     private void registerModules() {
-        Modules.register(new ConversationModule(this));
         Modules.register(new ContentModule(this));
     }
 
