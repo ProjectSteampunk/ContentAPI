@@ -21,6 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Item implements Content, Grantable, Interactable<PlayerInteractEvent>, MenuViewable, MenuEditable {
 
@@ -37,18 +39,23 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
     private static final ItemType DEFAULT_ITEM_TYPE = ItemType.ARROW;
     private static final String DEFAULT_TITLE = "Unspecified";
     private static final String DEFAULT_DESCRIPTION = "Enter a description for this item.";
+    private static final String ITEM_MODEL = null;
 
     public static final int MAX_DESCRIPTION_LENGTH = 45;
 
     // INITIALIZATION
-    @Getter private final @NotNull ContentRepository<? extends Item> repo;
-    @Getter protected final @NotNull EditableValues values;
+    @Getter
+    private final @NotNull ContentRepository<? extends Item> repo;
+    @Getter
+    protected final @NotNull EditableValues values;
 
     // COMPONENTS
-    @Getter protected @NotNull String id;
+    @Getter
+    protected @NotNull String id;
     protected @NotNull ItemType material = DEFAULT_ITEM_TYPE;
     protected @NotNull String title = DEFAULT_TITLE;
     protected @NotNull String description = DEFAULT_DESCRIPTION;
+    protected @Nullable String itemModel = ITEM_MODEL;
 
     public Item(@NotNull ContentRepository<? extends Item> repo, @NotNull String id) {
         this.repo = repo;
@@ -57,7 +64,8 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
                 new ConversationValue.Text("Content ID", () -> this.id, s -> this.id = s),
                 new ConversationValue.Text("Item Title", () -> this.title, s -> this.title = s),
                 new ConversationValue.Item("Item Type", () -> this.material, s -> this.material = s),
-                new ConversationValue.Text("Item Description", () -> this.description, s -> this.description = s)
+                new ConversationValue.Text("Item Description", () -> this.description, s -> this.description = s),
+                new ConversationValue.Text("Item Model", () -> this.itemModel, s -> this.itemModel = s)
         );
     }
 
@@ -66,6 +74,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         config.set("material", this.material.key().asMinimalString());
         config.set("title", this.title);
         config.set("description", this.description);
+        config.set("model", this.itemModel);
     }
 
     @Override
@@ -74,6 +83,7 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
                 DEFAULT_ITEM_TYPE.key().asMinimalString()));
         this.title = config.getString("title", DEFAULT_TITLE);
         this.description = config.getString("description", DEFAULT_DESCRIPTION);
+        this.itemModel = config.getString("model", ITEM_MODEL);
     }
 
     @Override
@@ -97,6 +107,10 @@ public class Item implements Content, Grantable, Interactable<PlayerInteractEven
         item.editPersistentDataContainer(this::shapeData);
         item.setData(DataComponentTypes.CUSTOM_NAME, this.craftTitle(item));
         item.setData(DataComponentTypes.LORE, this.craftLore(item));
+
+        if (this.itemModel != null) {
+            item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.fromString(this.itemModel));
+        }
 
         return item;
     }
